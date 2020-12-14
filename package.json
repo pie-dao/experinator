@@ -1,0 +1,32 @@
+{
+  "name": "experinator",
+  "scripts": {
+    "compile": "npx hardhat compile",
+    "clean": "rm -rf ./typechain && rm -rf ./artifacts && rm -rf ./cache",
+    "watch": "npx hardhat watch compilation",
+    "test": "npx hardhat test"
+  },
+  "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.0.1",
+    "@types/chai": "^4.2.14",
+    "@types/mocha": "^8.2.0",
+    "@types/node": "^14.14.12",
+    "chai": "^4.2.0",
+    "ethers": "^5.0.0",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.2"
+  },
+  "dependencies": {
+    "@nomiclabs/hardhat-waffle": "^2.0.1",
+    "@pie-dao/mock-contracts": "^0.0.9",
+    "@pie-dao/smart-pools": "https://github.com/pie-dao/pie-smart-pools#db8c88477b293b84e269d8b2f5a19482d8ef6e99",
+    "@typechain/ethers-v5": "^5.0.0",
+    "ExperiPie": "https://github.com/pie-dao/ExperiPie#feat/initializeable-diamond",
+    "diamond-2": "https://github.com/pie-dao/diamond-2#ca94c95bbea06bbd961d525e06792bcec02c4462",
+    "hardhat": "^2.0.5",
+    "hardhat-typechain": "^0.3.3",
+    "hardhat-watcher": "^2.0.0",
+    "ts-generator": "^0.1.1",
+    "typechain": "^4.0.1"
+  }
+}
