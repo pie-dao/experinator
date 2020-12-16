@@ -22,6 +22,7 @@ contract Experinator is Ownable {
         }
     }
 
+    // Make sure its initialised!
     function setDiamondImplementation(address _diamondImplementation) external onlyOwner {
         diamondImplementation = _diamondImplementation;
     }
