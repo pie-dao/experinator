@@ -6,11 +6,13 @@ import "./interfaces/IPV2SmartPool.sol";
 import "./interfaces/IBPool.sol";
 import "./interfaces/IBFactory.sol";
 import "./interfaces/ISmartPoolStorageDoctor.sol";
+import "./interfaces/IExperiPieStorageDoctor.sol";
 import "diamond-2/contracts/Diamond.sol";
 import "diamond-2/contracts/interfaces/IDiamondCut.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "ExperiPie/contracts/interfaces/IExperiPie.sol";
+import "hardhat/console.sol";
 
 contract Experinator is Ownable {
 
@@ -55,8 +57,12 @@ contract Experinator is Ownable {
         IPV2SmartPool smartPool = IPV2SmartPool(_smartPool);
         IExperiPie experiPie = IExperiPie(_smartPool);
         IBPool bPool = IBPool(smartPool.getBPool());
+        IExperiPieStorageDoctor eStorage = IExperiPieStorageDoctor(_smartPool);
 
         address[] memory tokens = smartPool.getTokens();
+
+        console.log("Controller");
+        console.log(smartPool.getController());
 
         smartPool.setTokenBinder(address(this));
 
@@ -67,9 +73,10 @@ contract Experinator is Ownable {
         smartPool.setTokenBinder(_controller);
         smartPool.setController(_controller);
 
-        proxy.setImplementation(diamondImplementation);
+        proxy.setImplementation(experiPieStorageDoctor);
+        eStorage.operate();
 
-        // TODO operate the storage instead if already initialized
+        proxy.setImplementation(diamondImplementation);
         diamond.initialize(diamondCut, address(this));
 
         
@@ -89,7 +96,7 @@ contract Experinator is Ownable {
         Diamond diamond = Diamond(payable(_experiPie));
         IPV2SmartPool smartPool = IPV2SmartPool(_experiPie);
         IExperiPie experiPie = IExperiPie(_experiPie);
-        ISmartPoolStorageDoctor spStorage = ISmartPoolStorageDoctor(smartPoolStorageDoctor);
+        ISmartPoolStorageDoctor spStorage = ISmartPoolStorageDoctor(_experiPie);
 
         address[] memory tokens = experiPie.getTokens();
 
@@ -119,7 +126,11 @@ contract Experinator is Ownable {
 
         proxy.setImplementation(smartPoolImplementation);
 
+        console.log("pool controller");
+        console.log(smartPool.getController());
+
         smartPool.setController(_owner);
+        proxy.setProxyOwner(_owner);
     }
 
 

@@ -2,9 +2,11 @@ import { expect } from "chai";
 import { ethers, network } from "hardhat";
 import { Signer, constants, BigNumber, utils, Contract, BytesLike } from "ethers";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/dist/src/signer-with-address";
+import { IBFactory } from "../typechain/IBFactory";
 import { IBPool } from "../typechain/IBPool";
-import { deployBalancerPool } from "../utils";
+import { deployBalancerFactory, deployBalancerPool } from "../utils";
 import { IBPool__factory } from "../typechain/factories/IBPool__factory";
+import { IBFactory__factory } from "../typechain/factories/IBFactory__factory";
 import { MockToken__factory } from "../typechain/factories/MockToken__factory";
 import { PProxy__factory } from "../typechain/factories/PProxy__factory";
 import LibAddRemoveTokenArtifact from "../artifacts/@pie-dao/smart-pools/contracts/libraries/LibAddRemoveToken.sol/LibAddRemoveToken.json";
@@ -23,12 +25,16 @@ import { CallFacet__factory } from "../typechain/factories/CallFacet__factory";
 import { DiamondCutFacet__factory } from "../typechain/factories/DiamondCutFacet__factory";
 import { OwnershipFacet__factory } from "../typechain/factories/OwnershipFacet__factory";
 import { DiamondLoupeFacet__factory } from "../typechain/factories/DiamondLoupeFacet__factory";
+import { SmartPoolStorageDoctor__factory } from "../typechain/factories/SmartPoolStorageDoctor__factory";
+import { ExperiPieStorageDoctor__factory } from "../typechain/factories/ExperiPieStorageDoctor__factory";
 import { PV2SmartPool__factory } from "../typechain/factories/PV2SmartPool__factory";
 import { IExperiPie } from "../typechain/IExperiPie";
 import { IExperiPie__factory } from "../typechain/factories/IExperiPie__factory";
 import { Experinator } from "../typechain/Experinator";
 import { Experinator__factory } from "../typechain/factories/Experinator__factory";
 import TimeTraveler from "../utils/TimeTraveler";
+import { ExperiPieStorageDoctor } from "../typechain/ExperiPieStorageDoctor";
+import { SmartPoolStorageDoctor } from "../typechain/SmartPoolStorageDoctor";
 
 function getSelectors(contract: Contract) {
     const signatures: BytesLike[] = [];
@@ -44,6 +50,7 @@ describe("Storage Test", async() => {
     let signers: SignerWithAddress[];
     let account: string;
     let bPool: IBPool;
+    let bFactory: IBFactory;
     let tokenFactory: MockToken__factory;
     let tokens: MockToken[] = [];
     let diamondCut: any[] = [];
@@ -56,6 +63,8 @@ describe("Storage Test", async() => {
     let proxy: PProxy;
     let smartPool: PV2SmartPool;
     let diamond: Diamond;
+    let experiPieStorageDoctor: ExperiPieStorageDoctor;
+    let smartPoolStorageDoctor: SmartPoolStorageDoctor;
     let experiPie: IExperiPie;
     let experinator: Experinator;
     let timeTraveler: TimeTraveler;
@@ -81,7 +90,7 @@ describe("Storage Test", async() => {
         account = signers[0].address;
 
         bPool = IBPool__factory.connect(await deployBalancerPool(signers[0]), signers[0]);
-
+        bFactory = IBFactory__factory.connect(await deployBalancerFactory(signers[0]), signers[0]);
         tokenFactory = new MockToken__factory(signers[0]);
 
         console.log("deploying tokens")
@@ -183,9 +192,17 @@ describe("Storage Test", async() => {
             },
         ];
 
+        smartPoolStorageDoctor = await new SmartPoolStorageDoctor__factory(signers[0]).deploy();
+        experiPieStorageDoctor = await new ExperiPieStorageDoctor__factory(signers[0]).deploy();
+
         // generate token storage data
         experinator = await (new Experinator__factory(signers[0])).deploy();
         await experinator.setCut(diamondCut);
+        await experinator.setExperiPieStorageDoctor(experiPieStorageDoctor.address);
+        await experinator.setSmartPoolStorageDoctor(smartPoolStorageDoctor.address);
+        await experinator.setDiamondImplementation(implementationDiamond.address);
+        await experinator.setSmartPoolImplementation(implementation.address);
+        await experinator.setBalancerFactory(bFactory.address);
 
         timeTraveler = new TimeTraveler(network.provider);
 
@@ -224,16 +241,39 @@ describe("Storage Test", async() => {
         }
     });
 
-    it("Pie smartpool -> Fresh ExperiPie", async() => {
+    it.only("Pie smartpool -> Fresh ExperiPie -> Back to SmartPool -> Back to ExperiPie with experinator", async() => {
         await proxy.setProxyOwner(experinator.address);
-        await smartPool.setController(experinator.address);
         await experinator.setDiamondImplementation(implementationDiamond.address);
-        await experinator.toExperiPie(experiPie.address, account);
+        await smartPool.setController(experinator.address);
+        // await smartPool.setController(experinator.address);
 
         const totalSupply = await experiPie.totalSupply();
         const tokens = await experiPie.getTokens();
 
         console.log(totalSupply.toString());
         console.log(tokens);
+
+        console.log("Experinator address:", experinator.address);
+        console.log("Account address", account);
+        console.log(smartPool.address, experiPie.address);
+
+        // TODO checks
+
+        await experinator.toExperiPie(smartPool.address, account);
+
+
+        // TODO checks
+        
+        await proxy.setProxyOwner(experinator.address);
+        await experiPie.transferOwnership(experinator.address);
+        await experinator.toSmartPool(smartPool.address, account, [parseEther("1"), parseEther("1"), parseEther("1"), parseEther("1"), parseEther("1"), parseEther("1"), parseEther("1"), parseEther("1")]);
+
+        // TODO checks
+
+        await proxy.setProxyOwner(experinator.address);
+        await smartPool.setController(experinator.address);
+        await experinator.toExperiPie(smartPool.address, account);
+
+        // TODO checks
     });
 });
