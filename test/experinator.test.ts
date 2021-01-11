@@ -53,6 +53,8 @@ describe("Storage Test", async() => {
     let bFactory: IBFactory;
     let tokenFactory: MockToken__factory;
     let tokens: MockToken[] = [];
+    let tokenAddresses: String[] = [];
+    let tokenBalances: BigNumber[] = [];
     let diamondCut: any[] = [];
 
     let implementation: PV2SmartPool;
@@ -95,11 +97,14 @@ describe("Storage Test", async() => {
 
         console.log("deploying tokens")
         for(let i = 0; i < 8; i ++) {
+            const tokenAmount = parseEther((1 + i).toString());
             const token = await tokenFactory.deploy(`TOKEN ${i}`, `SYMBOL ${i}`, 18);
             await token.mint(account, parseEther("1000000"));
             await token.approve(bPool.address, constants.MaxUint256);
-            await bPool.bind(token.address, parseEther("2"), parseEther("1"));
+            await bPool.bind(token.address, tokenAmount, parseEther("1"));
             tokens.push(token);
+            tokenAddresses.push(token.address);
+            tokenBalances.push(tokenAmount);
         }
 
         proxy = await (new PProxy__factory(signers[0])).deploy();
@@ -247,8 +252,8 @@ describe("Storage Test", async() => {
         await smartPool.setController(experinator.address);
         // await smartPool.setController(experinator.address);
 
-        const totalSupply = await experiPie.totalSupply();
-        const tokens = await experiPie.getTokens();
+        let totalSupply = await experiPie.totalSupply();
+        let tokens = await experiPie.getTokens();
 
         console.log(totalSupply.toString());
         console.log(tokens);
@@ -257,23 +262,56 @@ describe("Storage Test", async() => {
         console.log("Account address", account);
         console.log(smartPool.address, experiPie.address);
 
-        // TODO checks
-
         await experinator.toExperiPie(smartPool.address, account);
 
+        totalSupply = await experiPie.totalSupply();
+        tokens = await experiPie.getTokens();
+        let amounts = await experiPie.calcTokensForAmount(totalSupply);
 
-        // TODO checks
+        expect(tokens).to.eql(tokenAddresses);
+        expect(amounts.amounts).to.eql(tokenBalances);
+
+        let experiPieOwner = await experiPie.owner();
+        let proxyOwner = await proxy.getProxyOwner();
+
+        expect(experiPieOwner).to.eq(account);
+        expect(proxyOwner).to.eq(account);
+
+        const weights = [parseEther("1"), parseEther("1"), parseEther("1"), parseEther("1"), parseEther("1"), parseEther("1"), parseEther("1"), parseEther("1")]
         
         await proxy.setProxyOwner(experinator.address);
         await experiPie.transferOwnership(experinator.address);
-        await experinator.toSmartPool(smartPool.address, account, [parseEther("1"), parseEther("1"), parseEther("1"), parseEther("1"), parseEther("1"), parseEther("1"), parseEther("1"), parseEther("1")]);
+        await experinator.toSmartPool(smartPool.address, account, weights);
 
-        // TODO checks
+        tokens = await smartPool.getTokens();
+        amounts = await smartPool.calcTokensForAmount(totalSupply);
+        let newWeights = await smartPool.getDenormalizedWeights();
+        
+        expect(newWeights).to.eql(weights);
+
+        expect(tokens).to.eql(tokenAddresses);
+        expect(amounts.amounts).to.eql(tokenBalances);
+
+        let controller = await smartPool.getController();
+        proxyOwner = await proxy.getProxyOwner();
+
+        expect(controller).to.eq(account);
+        expect(proxyOwner).to.eq(proxyOwner);
 
         await proxy.setProxyOwner(experinator.address);
         await smartPool.setController(experinator.address);
         await experinator.toExperiPie(smartPool.address, account);
 
-        // TODO checks
+        tokens = await experiPie.getTokens();
+        amounts = await experiPie.calcTokensForAmount(totalSupply);
+
+        expect(tokens).to.eql(tokenAddresses);
+        expect(amounts.amounts).to.eql(tokenBalances);
+
+        experiPieOwner = await experiPie.owner();
+        proxyOwner = await proxy.getProxyOwner();
+
+        expect(experiPieOwner).to.eq(account);
+        expect(proxyOwner).to.eq(account);
     });
 });
