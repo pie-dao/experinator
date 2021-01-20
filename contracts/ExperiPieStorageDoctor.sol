@@ -1,11 +1,11 @@
 pragma experimental ABIEncoderV2;
 pragma solidity 0.7.3;
 
-import "diamond-2/contracts/interfaces/IDiamondCut.sol";
-import "diamond-2/contracts/libraries/LibDiamond.sol";
-import "diamond-2/contracts/libraries/LibDiamondInitialize.sol";
-import "diamond-2/contracts/facets/DiamondLoupeFacet.sol";
-import "ExperiPie/contracts/facets/Basket/LibBasketStorage.sol";
+import "@pie-dao/diamond/contracts/interfaces/IDiamondCut.sol";
+import "@pie-dao/diamond/contracts/libraries/LibDiamond.sol";
+import "@pie-dao/diamond/contracts/libraries/LibDiamondInitialize.sol";
+import "@pie-dao/diamond/contracts/facets/DiamondLoupeFacet.sol";
+import "@pie-dao/pie-vaults/contracts/facets/Basket/LibBasketStorage.sol";
 
 
 contract ExperiPieStorageDoctor {

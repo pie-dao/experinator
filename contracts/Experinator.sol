@@ -7,11 +7,11 @@ import "./interfaces/IBPool.sol";
 import "./interfaces/IBFactory.sol";
 import "./interfaces/ISmartPoolStorageDoctor.sol";
 import "./interfaces/IExperiPieStorageDoctor.sol";
-import "diamond-2/contracts/Diamond.sol";
-import "diamond-2/contracts/interfaces/IDiamondCut.sol";
+import "@pie-dao/diamond/contracts/Diamond.sol";
+import "@pie-dao/diamond/contracts/interfaces/IDiamondCut.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "ExperiPie/contracts/interfaces/IExperiPie.sol";
+import "@pie-dao/pie-vaults/contracts/interfaces/IExperiPie.sol";
 import "hardhat/console.sol";
 
 contract Experinator is Ownable {
