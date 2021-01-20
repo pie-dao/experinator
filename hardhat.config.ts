@@ -1,8 +1,11 @@
+require('dotenv').config()
 import { task } from "hardhat/config";
 import "@nomiclabs/hardhat-waffle";
 import "@nomiclabs/hardhat-ethers";
 import "hardhat-typechain";
 import "hardhat-watcher";
+
+import fs from "fs";
 
 import { Experinator } from "./typechain/Experinator";
 import { Experinator__factory } from "./typechain/factories/Experinator__factory";
@@ -72,15 +75,26 @@ task("get-address")
     console.log((await ethers.getSigners())[0].address);
 });
 
-task("get-cut")
+task("export-cut")
   .addParam("pie", "address of the pie")
+  .addParam("output", "path to write file to")
   .setAction(async(taskArgs, {ethers}) => {
     const signers = await ethers.getSigners();
 
     const experiPie = IExperiPie__factory.connect(taskArgs.pie, signers[0]);
     const facets = await experiPie.facets();
 
-    console.log(facets);
+    // console.log(facets);
+
+    const facetCut: any[] = facets.map((item) => (
+      {
+        action: 0,
+        facetAddress: item.facetAddress,
+        functionSelectors: item.functionSelectors
+      }
+    ))
+
+    fs.writeFileSync(taskArgs.output, JSON.stringify(facetCut, null, 2));
 })
 
 task("deploy-experinator")

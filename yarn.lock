@@ -607,9 +607,9 @@
     "@openzeppelin/contracts" "^3.0.1"
 
 "@pie-dao/pie-vaults@^0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@pie-dao/pie-vaults/-/pie-vaults-0.1.1.tgz#653baf11e5cad663e9852aef8042debd0063a52e"
-  integrity sha512-BkcHGxFbp72jGtrLvnu/QI/w+fcq/JtnAsx/mW+zmIN+2cEAZOuF1gVf4OYvV1tlyE34uu+Qerl/8QWbwu4XUQ==
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@pie-dao/pie-vaults/-/pie-vaults-0.1.2.tgz#8404413336994992ad69a01e54a619d04f291ac5"
+  integrity sha512-rT/80gL0h8sg1BcNNSLHBbjMJtzq5B00qi5+YNAdaIoCQS+gwxUMWKKYln2Z6bIolutORSxVamFBe/6H2unO6Q==
   dependencies:
     "@ethereum-waffle/chai" "^3.1.0"
     "@nomiclabs/buidler" "^1.4.8"

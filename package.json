@@ -22,6 +22,7 @@
     "@pie-dao/pie-vaults": "^0.1.1",
     "@pie-dao/smart-pools": "^0.1.0",
     "@typechain/ethers-v5": "^5.0.0",
+    "dotenv": "^8.2.0",
     "hardhat": "^2.0.5",
     "hardhat-typechain": "^0.3.3",
     "hardhat-watcher": "^2.0.0",
