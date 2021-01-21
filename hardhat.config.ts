@@ -128,6 +128,17 @@ task("deploy-experinator")
         // await experinator.setDiamondImplementation(taskArgs.diamondImplementation);
 });
 
+task("set-cut")
+  .addParam("experinator")
+  .addParam("cut", "path to the json containing the cut")
+  .setAction(async (taskArgs, {ethers}) => {
+    const signers = await ethers.getSigners();
+    const experinator = Experinator__factory.connect(taskArgs.experinator, signers[0]);
+
+    const cut = require(taskArgs.cut);
+    await experinator.setCut(cut);
+});
+
 task("set-controller-owner")
   .addParam("pie")
   .addParam("to")
@@ -137,7 +148,7 @@ task("set-controller-owner")
     const proxy = await IProxy__factory.connect(taskArgs.pie, signers[0]);
     const smartpool = await IPV2SmartPool__factory.connect(taskArgs.pie, signers[0]);
 
-    // await proxy.setProxyOwner(taskArgs.to);
+    await proxy.setProxyOwner(taskArgs.to);
     await smartpool.setController(taskArgs.to);
 });
 
