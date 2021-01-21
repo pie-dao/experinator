@@ -4,7 +4,8 @@
     "compile": "npx hardhat compile --config hardhat.config.compile.ts",
     "clean": "rm -rf ./typechain && rm -rf ./artifacts && rm -rf ./cache",
     "watch": "npx hardhat watch compilation",
-    "test": "npx hardhat test"
+    "test": "npx hardhat test",
+    "fork": "npx hardhat node --fork https://mainnet.infura.io/v3/ffa6c1dc83e44e6c9971d4706311d5ab"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.1",

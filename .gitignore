@@ -106,3 +106,4 @@ dist
 typechain
 artifacts
 cache
+cut.json

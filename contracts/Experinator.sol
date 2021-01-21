@@ -24,7 +24,24 @@ contract Experinator is Ownable {
 
     IDiamondCut.FacetCut[] public diamondCut;
 
-    function setCut(IDiamondCut.FacetCut[] memory _diamondCut) external {
+    constructor(
+        // IDiamondCut.FacetCut[] memory _diamondCut,
+        address _diamondImplementation,
+        address _balancerFactory,
+        address _smartPoolImplementation,
+        address _smartPoolStorageDoctor,
+        address _experiPieStorageDoctor
+    ) {
+        // setCut(_diamondCut);
+        diamondImplementation = _diamondImplementation;
+        balancerFactory = _balancerFactory;
+        smartPoolImplementation = _smartPoolImplementation;
+        smartPoolStorageDoctor = _smartPoolStorageDoctor;
+        experiPieStorageDoctor = _experiPieStorageDoctor;
+    }
+
+    function setCut(IDiamondCut.FacetCut[] memory _diamondCut) public onlyOwner {
+        delete diamondCut;
         for(uint256 i = 0; i < _diamondCut.length; i ++) {
             diamondCut.push(_diamondCut[i]);
         }

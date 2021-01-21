@@ -1,2 +1,7 @@
 # experinator
 Converts Pie Smart Pools into ExperiPies 🥧
+
+
+Diamond implementation: 0x1f863776975a69b6078fdafab6298d3e823e0190
+Balancer factory: 0x9424B1412450D0f8Fc2255FAf6046b98213B76Bd
+Smart pool implementation: 0x706f00ea85a71eb5d7c2ce2ad61dbbe62b616435
