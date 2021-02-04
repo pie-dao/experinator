@@ -13,3 +13,16 @@ Smart pool implementation: 0x706f00ea85a71eb5d7c2ce2ad61dbbe62b616435
 experinator: 0xd6a2AAeb7ee0243D7d3148cCDB10C0BD1bb56336
 smartpool storage doctor: 0xd7Db1aE8193A12D0ee5e1cf53D7Bcf0f20D09757
 experiPie storage doctor: 0xCA4Dc78E1BB0520606195DF3BBD24638fF996852
+
+
+## How to migrate a Pie Smart Pool to a PieVault
+
+Set the proxy owner and smart pool controller to the experinator contract address ``0xd6a2AAeb7ee0243D7d3148cCDB10C0BD1bb56336``
+
+Migrate pie
+
+```
+npx harhat to-experipie --experinator 0xd6a2AAeb7ee0243D7d3148cCDB10C0BD1bb56336 --pie [smart pool address]
+```
+
+Afterwards you need to set the fees, cap and other params if necesary
