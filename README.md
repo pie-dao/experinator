@@ -17,9 +17,55 @@ smartpool storage doctor: 0xd7Db1aE8193A12D0ee5e1cf53D7Bcf0f20D09757
 experiPie storage doctor: 0xCA4Dc78E1BB0520606195DF3BBD24638fF996852
 ```
 
+## How to deploy
+
+### Deploy diamond cut
+
+A diamond cut determines which functions are added and their implementation. To deploy the default diamond cut you need to do the following steps.
+
+1. Clone the repo located [here](https://github.com/pie-dao/PieVaults)
+
+2. Install dependencies and build the project
+
+```
+    yarn
+    yarn typechain
+```
+
+3. Setup the .env file
+
+4. Deploy and save the cut
+
+```
+npx buidler deploy-pie-vault-cut --network mainnet
+```
+
+Copy and save the json output after ``CUT JSON:``
+
+5. Verify each facet using:
+
+```
+npx buidler verify [facetAddress]
+```
+
+### Deploy the experinator
+
+Inside this repo.
+
+```
+npx hardhat deploy-experinator --cut [PATH_TO_CUT_JSON] --diamond-implementation [AN_INSTANCE_OF_AN_INITIALISED_DIAMOND] --balancer-factory [ADDRESS_OF_THE_BALANCER_V1_FACTORY] --smart-pool-implementation [SMART_POOL_IMPLEMENTAION_CONTRACT]
+```
+
+task("deploy-experinator")
+    .addParam("cut", "path to json containing cut")
+    .addParam("diamondImplementation", "must be intialised!")
+    .addParam("balancerFactory", "address of the balancer factory")
+    .addParam("smartPoolImplementation", "address of the smart pool implementation")
+
+
 ## How to migrate a Pie Smart Pool to a PieVault
 
-Set the proxy owner and smart pool controller to the experinator contract address ``0xd6a2AAeb7ee0243D7d3148cCDB10C0BD1bb56336``
+Set the proxy owner and smart pool controller to the experinator contract address.
 
 Migrate pie
 
