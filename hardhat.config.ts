@@ -159,5 +159,17 @@ task("to-experipie")
         const signers = await ethers.getSigners();
         const experinator: Experinator = await Experinator__factory.connect(taskArgs.experinator, signers[0]);
 
-        experinator.toExperiPie(taskArgs.pie, signers[0].address);
+        await experinator.toExperiPie(taskArgs.pie, signers[0].address, {gasPrice: 170000000000});
+});
+
+task("to-experipie-tx-data")
+  .addParam("pie")
+  .addParam("experinator")
+  .setAction(async(taskArgs, {ethers}) => {
+    const signers = await ethers.getSigners();
+    const experinator: Experinator = await Experinator__factory.connect(taskArgs.experinator, signers[0]);
+
+    const tx = await experinator.populateTransaction.toExperiPie(taskArgs.pie, "0x3bFdA5285416eB06Ebc8bc0aBf7d105813af06d0", {gasPrice: 170000000000});
+
+    console.log(JSON.stringify(tx, null, 2));
 });
