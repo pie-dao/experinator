@@ -7632,9 +7632,9 @@ solc@^0.6.3:
     semver "^5.5.0"
     tmp "0.0.33"
 
-"solidity-coverage@git+https://github.com/sc-forks/solidity-coverage.git":
+"solidity-coverage@https://github.com/sc-forks/solidity-coverage":
   version "0.7.14"
-  resolved "git+https://github.com/sc-forks/solidity-coverage.git#5062c374be301fbe51bd1c0abc22929276798c18"
+  resolved "https://github.com/sc-forks/solidity-coverage#5062c374be301fbe51bd1c0abc22929276798c18"
   dependencies:
     "@solidity-parser/parser" "^0.11.0"
     "@truffle/provider" "^0.2.24"

@@ -162,6 +162,18 @@ task("to-experipie")
         await experinator.toExperiPie(taskArgs.pie, signers[0].address, {gasPrice: 170000000000});
 });
 
+task("to-smart-pool")
+  .addParam("pie", "address of the pievault to convert")
+  .addParam("experinator", "address of the experinator")
+  .addParam("weigths", "path to json with denormalised weights json file. Must have the same order as the tokens in the pie")
+  .setAction(async (taskArgs, {ethers}) => {
+    const signers = await ethers.getSigners();
+    const experinator: Experinator = await Experinator__factory.connect(taskArgs.experinator, signers[0]);
+
+    const weights = require(taskArgs.weigths);
+    await experinator.toSmartPool(taskArgs.pie, signers[0].address, weights);
+});
+
 task("to-experipie-tx-data")
   .addParam("pie")
   .addParam("experinator")

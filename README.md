@@ -56,13 +56,6 @@ Inside this repo.
 npx hardhat deploy-experinator --cut [PATH_TO_CUT_JSON] --diamond-implementation [AN_INSTANCE_OF_AN_INITIALISED_DIAMOND] --balancer-factory [ADDRESS_OF_THE_BALANCER_V1_FACTORY] --smart-pool-implementation [SMART_POOL_IMPLEMENTAION_CONTRACT]
 ```
 
-task("deploy-experinator")
-    .addParam("cut", "path to json containing cut")
-    .addParam("diamondImplementation", "must be intialised!")
-    .addParam("balancerFactory", "address of the balancer factory")
-    .addParam("smartPoolImplementation", "address of the smart pool implementation")
-
-
 ## How to migrate a Pie Smart Pool to a PieVault
 
 Set the proxy owner and smart pool controller to the experinator contract address.
@@ -74,3 +67,25 @@ npx harhat to-experipie --experinator 0xd6a2AAeb7ee0243D7d3148cCDB10C0BD1bb56336
 ```
 
 Afterwards you need to set the fees, cap and other params if necesary
+
+## How to migrate a PieVault to a smart pool
+
+Set the proxy owner and diamond owner to the experinator contract
+
+Create a JSON file with the weigths in the token. Make sure the weights are in the same order as the tokens in the pool.
+
+Example JSON file for 3 tokens with equal weight:
+
+```json
+[
+    "1000000000000000000",
+    "1000000000000000000",
+    "1000000000000000000"
+]
+```
+
+Migrate pie
+
+```
+npx hardhat to-smart-pool --pie [PIE_ADDRESS] --experinator [EXPERINATOR_ADDRESS] --weights [PATH_TO_JSON_FILE]
+```
