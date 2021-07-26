@@ -89,3 +89,5 @@ Migrate pie
 ```
 npx hardhat to-smart-pool --pie [PIE_ADDRESS] --experinator [EXPERINATOR_ADDRESS] --weights [PATH_TO_JSON_FILE]
 ```
+
+After that you need to set the fees, cap, fee benefiary and such
